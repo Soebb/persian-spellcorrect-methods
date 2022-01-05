@@ -1,4 +1,5 @@
 import nltk
+import os
 from pyrogram import Client, filters
 
 # config vars
