@@ -1,7 +1,6 @@
 import nltk
 from pyrogram import Client, filters
 
-
 # config vars
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 API_ID = os.environ.get("API_ID")
