@@ -52,8 +52,7 @@ async def main(bot, m):
                 for word in words:
                     corrected_word = nltk.edit_distance(x,word)
                 sntnce_splited[sntnce_splited.index(x)] = corrected_word
-        for corrected_word in sntnce_splited:
-            new_text += corrected_word.join(" ")
+        new_text += " ".join(sntnce_splited)
         new_text += "\n"
     await m.reply(new_text)
 
