@@ -45,7 +45,7 @@ words=read_file('big.txt')
 async def main(bot, m):
     text = m.text
     new_text = ""
-    for sntnce in text.rsplitlines():
+    for sntnce in text.rsplit("\n"):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
             if x not in words:
