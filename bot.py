@@ -35,7 +35,7 @@ async def start(bot, update):
 def read_file(path):
     with open(path, 'r', encoding="utf-8") as f:
         words = f.read().split()
-
+    words.extend(['!', '؟' ,'؛', '،', '.'])
     return words
 
 
