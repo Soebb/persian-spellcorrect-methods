@@ -51,7 +51,7 @@ async def main(bot, m):
             if x not in words:
                 for word in words:
                     corrected_word = nltk.edit_distance(x,word)
-                sntnce_splited[sntnce_splited.index(x)] = corrected_word
+                sntnce_splited[sntnce_splited.index(x)] = str(corrected_word)
         new_text += " ".join(sntnce_splited)
         new_text += "\n"
     await m.reply(new_text)
