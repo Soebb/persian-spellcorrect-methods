@@ -1,1 +1,3 @@
 nltk
+pyrogram
+tgcrypto
