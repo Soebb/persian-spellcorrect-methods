@@ -4,7 +4,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, MessageHandler, CallbackQueryHandler, CallbackContext, Filters
 
 
-BOT_TOKEN = " "
+BOT_TOKEN = "1885892556:AAFKIRpI_cIdZKPtWD7Klfz-ee9Uk3WXQ_c"
 
 vdir = "C:/dlmacvin/1aa"
 main = vdir.rsplit('/', 1)[1] + '\\'
