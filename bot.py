@@ -16,9 +16,9 @@ Bot = Client(
 
 START_TXT = """
 Hi {}
-I am Text Corrector Bot.
+I am Persian Text Corrector Bot.
 
-> `I can correct Persian text for you.`
+> `I can correct the spell mistakes in the text.`
 
 Send me a text message to get started.
 """
