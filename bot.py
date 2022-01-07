@@ -1,4 +1,4 @@
-import nltk
+from spell import correction
 import os
 from pyrogram import Client, filters
 
@@ -32,15 +32,6 @@ async def start(bot, update):
     )
 
 
-def read_file(path):
-    with open(path, 'r', encoding="utf-8") as f:
-        words = f.read().split()
-    words.extend(['!', '؟' ,'؛', '،', '.'])
-    return words
-
-
-words=read_file('big.txt')
-
 @Bot.on_message(filters.private & filters.text)
 async def main(bot, m):
     text = m.text
@@ -49,8 +40,7 @@ async def main(bot, m):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
             if x not in words:
-                for word in words:
-                    corrected_word = (nltk.edit_distance(x,word))
+                corrected_word = correction(word)
                 sntnce_splited[sntnce_splited.index(x)] = corrected_word
         new_text += " ".join(str(corrected_word) for corrected_word in sntnce_splited)
         new_text += "\n"
