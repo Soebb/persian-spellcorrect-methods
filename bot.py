@@ -49,7 +49,7 @@ async def main(bot, m):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
             if x not in words:
-                corrected_word = correction(word)
+                corrected_word = correction(x)
                 sntnce_splited[sntnce_splited.index(x)] = str(corrected_word)
         new_text += " ".join(sntnce_splited)
         new_text += "\n"
