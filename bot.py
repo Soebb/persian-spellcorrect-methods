@@ -31,11 +31,20 @@ async def start(bot, update):
         disable_web_page_preview=True
     )
 
+def read_file(path):
+    with open(path, 'r', encoding="utf-8") as f:
+        words = f.read().split()
+    words.extend(['!', '؟' ,'؛', '،', '.'])
+    return words
+
+words=read_file('big.txt')
+
 
 @Bot.on_message(filters.private & filters.text)
 async def main(bot, m):
     text = m.text
     new_text = ""
+    # for a non-persian/arabic language spell correcting, use split() instead of rsplit() to splitting lines/words
     for sntnce in text.rsplit("\n"):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
