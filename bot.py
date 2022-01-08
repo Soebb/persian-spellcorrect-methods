@@ -33,7 +33,7 @@ async def start(bot, update):
         disable_web_page_preview=True
     )
 
-"""
+
 def read_file(path):
     with open(path, 'r', encoding="utf-8") as f:
         words = f.read().split()
@@ -50,28 +50,21 @@ async def main(bot, m):
     for sntnce in text.rsplit("\n"):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
-            if x not in words:
-                for w in words:
-                    if len(list(x))==len(list(w)):
-                        if len(list(x)) - len(commons) 
-
             """
             if x not in words:
                 corrected_word = correction(x)
                 sntnce_splited[sntnce_splited.index(x)] = str(corrected_word)
             """
+            if x not in words:
+                for w in words:
+                    if len(list(x))==len(list(w)):
+                        commons = list(set(list(x)) & set(list(w)))
+                        if (len(list(x)) - len(commons)) < 2:
+                        
         new_text += " ".join(sntnce_splited)
         new_text += "\n"
     await m.reply(new_text)
-"""
 
-
-@Bot.on_message(filters.private & filters.text)
-async def main(bot, m):
-    text = m.text
-    textt = PersianEditor(text)
-    print(textt)
-    await m.reply(textt)
 
 
 Bot.run()
