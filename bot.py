@@ -51,8 +51,15 @@ async def main(bot, m):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
             if x not in words:
+                for w in words:
+                    if len(list(x))==len(list(w)):
+                        if len(list(x)) - len(commons) 
+
+            """
+            if x not in words:
                 corrected_word = correction(x)
                 sntnce_splited[sntnce_splited.index(x)] = str(corrected_word)
+            """
         new_text += " ".join(sntnce_splited)
         new_text += "\n"
     await m.reply(new_text)
