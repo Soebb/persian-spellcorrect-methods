@@ -364,3 +364,18 @@ class PersianEditor():
         """
         self.text = re.sub(r'[ ]+', r' ', self.text)
         self.text = re.sub(r'([\n]+)[ ‌]', r'\1', self.text)
+
+    def char_translator(self, fromchar, tochar, whichstring):
+        """
+        char_translator()
+        =================
+        This function will translate the 'whichstring' character by character
+        from 'fromchar' to 'tochar'. in this new function I can return
+        the newstring, but I can't check the length of fromchar and tochar!
+        Why? I don't know!
+        """
+        # TODO: check the length of `fromchar` and `tochar`!
+        newstring = whichstring
+        for i in range(len(fromchar)):
+            newstring = re.sub(fromchar[i], tochar[i], newstring)
+        return newstring
