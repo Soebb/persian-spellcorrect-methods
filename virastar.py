@@ -25,7 +25,7 @@ class PersianEditor():
 
             Check to see if `arg` exist in `args`
             """
-            return False if arg in args else True
+            return True if not arg in args else False
 
         self.text = text
         self.cleanup_zwnj = False
