@@ -61,8 +61,8 @@ async def main(bot, m):
 
 @Bot.on_message(filters.private & filters.text)
 async def main(bot, m):
-    text = unicode(m.text, encoding='utf-8')
-    await m.reply(PersianEditor(text))
+    #text = str(m.text, 'utf-8')
+    await m.reply(PersianEditor(m.text))
 
 
 Bot.run()
