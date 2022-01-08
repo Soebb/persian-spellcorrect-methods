@@ -13,39 +13,30 @@ class PersianEditor():
 
     This class includes some functions to standard edit a Persian text
     """
-    def __init__(self, text, *args):
+    def __init__(self, text):
         """
         This is the base part of the class
         """
 
-        def is_in_args(arg):
-            """
-            is_in_args(arg)
-            ===============
-
-            Check to see if `arg` exist in `args`
-            """
-            return True if not arg in args else False
-
         self.text = text
         self.cleanup_zwnj = False
-        self.fix_dashes = is_in_args('fix-dashes')
-        self.fix_three_dots = is_in_args('fix-three-dots')
-        self.fix_hamzeh = is_in_args('fix-hamzeh')
-        self.hamzeh_with_yeh = is_in_args('hamzeh-with-yeh')
-        self.fix_perfix_spacing = is_in_args('fix-p-spacing')
-        self.fix_perfix_separate = is_in_args('fix-p-separate')
-        self.fix_suffix_spacing = is_in_args('fix-s-spacing')
-        self.fix_suffix_separate = is_in_args('fix-s-separate')
-        self.aggresive = is_in_args('aggresive')
-        self.cleanup_kashidas = is_in_args('cleanup-kashidas')
-        self.fix_english_quotes = is_in_args('fix-english-quotes')
-        self.cleanup_extra_marks = is_in_args('cleanup-ex-marks')
-        self.cleanup_spacing = is_in_args('cleanup-spacing')
-        self.fix_spacing_for_braces_and_quotes = is_in_args('fix-spacing-bq')
-        self.fix_arabic_numbers = is_in_args('fix-arabic-num')
-        self.fix_english_numbers = is_in_args('fix-english-num')
-        self.fix_misc_non_persian_chars = is_in_args('fix-non-persian-chars')
+        self.fix_dashes = True
+        self.fix_three_dots = True
+        self.fix_hamzeh = True
+        self.hamzeh_with_yeh = True
+        self.fix_perfix_spacing = True
+        self.fix_perfix_separate = True
+        self.fix_suffix_spacing = True
+        self.fix_suffix_separate = True
+        self.aggresive = True
+        self.cleanup_kashidas = True
+        self.fix_english_quotes = True
+        self.cleanup_extra_marks = True
+        self.cleanup_spacing = True
+        self.fix_spacing_for_braces_and_quotes = True
+        self.fix_arabic_numbers = True
+        self.fix_english_numbers = True
+        self.fix_misc_non_persian_chars = True
 
         self.cleanup()
 
@@ -137,8 +128,8 @@ class PersianEditor():
 
         it uses char_translator function to do it.
         """
-        bad_chars  = u",;%يةك"
-        good_chars = u"،؛٪یهک"
+        bad_chars  = ",;%يةك"
+        good_chars = "،؛٪یهک"
         self.text = self.char_translator(bad_chars, good_chars, self.text)
 
     def fix_arabic_numbers_func(self):
@@ -150,8 +141,8 @@ class PersianEditor():
 
         It uses char_translator function to do it.
         """
-        persian_numbers = u"۱۲۳۴۵۶۷۸۹۰"
-        arabic_numbers = u"١٢٣٤٥٦٧٨٩٠"
+        persian_numbers = "۱۲۳۴۵۶۷۸۹۰"
+        arabic_numbers = "١٢٣٤٥٦٧٨٩٠"
         self.text = self.char_translator(
             arabic_numbers,
             persian_numbers,
@@ -169,8 +160,8 @@ class PersianEditor():
         it will avoid to do this translation at a English string!
         it uses char_translator function to do it.
         """
-        persian_numbers = u"۱۲۳۴۵۶۷۸۹۰"
-        english_numbers = u"1234567890"
+        persian_numbers = "۱۲۳۴۵۶۷۸۹۰"
+        english_numbers = "1234567890"
         self.text = self.char_translator(
             english_numbers,
             persian_numbers,
