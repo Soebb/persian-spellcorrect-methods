@@ -50,8 +50,8 @@ async def main(bot, m):
     for sntnce in text.rsplit("\n"):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
+            similars = []
             if x not in words:
-                similars = []
                 best_match = None
                 for w in words:
                     if len(list(x))==len(list(w)):
