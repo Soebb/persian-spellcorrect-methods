@@ -61,15 +61,13 @@ async def main(bot, m):
             for s in similars:
                 if sum([1 for i,j in zip(x,s) if i==j]) == len(list(x)):
                     best_match = s
-                    sntnce_splited[sntnce_splited.index(x)] = str(best_match)
             if not best_match:
                 for s in similars:
                     if (len(list(x)) - sum([1 for i,j in zip(x,s) if i==j])) == 1:
                         best_match = s
-                        sntnce_splited[sntnce_splited.index(x)] = str(best_match)
             if similars == [] or not best_match:
                 best_match = correction(x)
-                sntnce_splited[sntnce_splited.index(x)] = str(best_match)
+            sntnce_splited[sntnce_splited.index(x)] = str(best_match)
         new_text += " ".join(sntnce_splited)
         new_text += "\n"
     await m.reply(new_text)
