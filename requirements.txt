@@ -1,2 +1,3 @@
 pyrogram
 tgcrypto
+https://github.com/shahinism/python-negar/archive/master.zip
