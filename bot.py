@@ -61,7 +61,7 @@ async def main(bot, m):
 
 @Bot.on_message(filters.private & filters.text)
 async def main(bot, m):
-    text = str(m.text, 'utf-8')
+    text = m.text
     textt = PersianEditor(text)
     print(textt)
     await m.reply(textt)
