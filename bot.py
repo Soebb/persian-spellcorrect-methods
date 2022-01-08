@@ -1,6 +1,8 @@
 from spell import correction
 import os
 from pyrogram import Client, filters
+from negar.virastar import PersianEditor
+
 
 # config vars
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -31,6 +33,7 @@ async def start(bot, update):
         disable_web_page_preview=True
     )
 
+"""
 def read_file(path):
     with open(path, 'r', encoding="utf-8") as f:
         words = f.read().split()
@@ -38,7 +41,6 @@ def read_file(path):
     return words
 
 words=read_file('big.txt')
-
 
 @Bot.on_message(filters.private & filters.text)
 async def main(bot, m):
@@ -54,7 +56,13 @@ async def main(bot, m):
         new_text += " ".join(sntnce_splited)
         new_text += "\n"
     await m.reply(new_text)
+"""
 
+
+@Bot.on_message(filters.private & filters.text)
+async def main(bot, m):
+    text = unicode(m.text, encoding='utf-8')
+    await m.reply(PersianEditor(text))
 
 
 Bot.run()
