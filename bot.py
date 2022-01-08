@@ -1,7 +1,7 @@
 from spell import correction
 import os
 from pyrogram import Client, filters
-from negar.virastar import PersianEditor
+from virastar import PersianEditor
 
 
 # config vars
