@@ -51,8 +51,8 @@ async def main(bot, m):
         sntnce_splited = sntnce.rsplit()
         for x in sntnce_splited:
             similars = []
+            best_match = None
             if x not in words:
-                best_match = None
                 for w in words:
                     if len(list(x))==len(list(w)):
                         commons = list(set(list(x)) & set(list(w)))
