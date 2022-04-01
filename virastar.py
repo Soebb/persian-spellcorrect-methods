@@ -31,62 +31,241 @@ class PersianEditor:
         self._fix_misc_non_persian_chars = True
 
         UnTouchable() # to generate the untouchable words
-        # self.dont_touch_list_gen()
         self.cleanup()
 
+    def cleanup(self):
+        if self._fix_dashes: self.fix_dashes()
+        if self._fix_three_dots: self.fix_three_dots()
+        if self._fix_english_quotes: self.fix_english_quotes()
+        if self._fix_hamzeh: self.fix_hamzeh()
+        if self._cleanup_zwnj: self.cleanup_zwnj()
+        if self._fix_misc_non_persian_chars: self.char_validator()
+        if self._fix_arabic_numbers: self.fix_arabic_numbers()
+        if self._fix_english_numbers: self.fix_english_numbers()
+        if self._fix_prefix_spacing: self.fix_prefix_spacing()
+        if self._fix_prefix_separate: self.fix_prefix_separate()
+        if self._fix_suffix_spacing: self.fix_suffix_spacing()
+        if self._fix_suffix_separate: self.fix_suffix_separate()
+        if self._aggresive: self.aggressive()
+        if self._cleanup_spacing: self.cleanup_spacing()
+        if self._fix_spacing_for_braces_and_quotes:
+            self.fix_spacing_for_braces_and_quotes()
+        self.cleanup_redundant_zwnj()
 
+        return self.text
 
+    def __str__(self):
+        return self.text
 
+    __repr__ = __str__
 
-    def fix_prefix_separate_func(self):
-        """
-        """
-        # I removed punctioations here but I dont know why its work :D
-        regex = re.compile(r"\A(ن?می)(\S+)") #  \A for words like سهمیه
+    def fix_dashes(self):
+        """Replaces double and triple dashes with `ndash` and `mdash`, respectively."""
+        self.text = re.sub(r'-{3}', r'—', self.text)
+        self.text = re.sub(r'-{2}', r'–', self.text)
 
-        # This is a little parser that split whole string from spaces
-        # and put it to list
-        # all lists words will be test one by one and space if need
+    def fix_three_dots(self):
+        """Replaces three dots with an ellipsis."""
+        self.text = re.sub(r'\s*\.{3,}', r'…', self.text)
+
+    def fix_english_quotes(self):
+        """Replaces English quotes with their Persian counterparts."""
+        self.text = re.sub(r"([\"'`]+)(.+?)(\1)", r'«\2»', self.text)
+
+    def fix_hamzeh(self):
+        """Replaces trailing 'ه ی' with 'هٔ' or 'ه‌ی'--the last one is achievable if hamzeh_with_yeh set."""
+        if self._hamzeh_with_yeh:
+            self.text = re.sub(r'(\S)(ه[\s]+[یي])(\b)',r'\1ه‌ی\3',self.text)
+        else:
+            self.text = re.sub(r'(\S)(ه[\s]+[یي])(\b)',r'\1هٔ\3', self.text)
+
+    def cleanup_zwnj(self):
+        """Removes unnecessary ZWNJ that are succeeded/preceded by a space."""
+        self.text = re.sub(r'\s+|\s+', r' ', self.text)
+
+    def cleanup_redundant_zwnj(self):
+        """Removes unwanted ZWNJs which are added by some sanitization tasks."""
+        self.text = re.sub(r'([ءاأدذرزژوؤ])‌+', r'\1', self.text)
+        self.text = re.sub(r'(‌)+', r'\1', self.text)
+
+    def char_validator(self):
+        """Replaces invalid characters with valid ones."""
+        bad_chars  = ",;%يةك"
+        good_chars = "،؛٪یهک"
+        self.text = self.char_translator(bad_chars, good_chars, self.text)
+
+    def fix_arabic_numbers(self):
+        """Translates Arabic numbers to their Persian counterparts."""
+        persian_numbers = "۱۲۳۴۵۶۷۸۹۰"
+        arabic_numbers = "١٢٣٤٥٦٧٨٩٠"
+        self.text = self.char_translator(
+            arabic_numbers,
+            persian_numbers,
+            self.text
+        )
+
+    def fix_english_numbers(self):
+        """Translates English numbers to their Persian counterparts."""
+        persian_numbers = "۱۲۳۴۵۶۷۸۹۰"
+        english_numbers = "1234567890"
+        self.text = self.char_translator(
+            english_numbers,
+            persian_numbers,
+            self.text
+        )
+
+        # Avoids to change English numbers in strings like 'Text12', 'Text_12', or 'A4'
+        self.text = re.sub(
+            r'[a-z\-_]{1,}[۰-۹]+|[۰-۹]+[a-z\-_]{1,}',
+            lambda m:
+            self.char_translator(persian_numbers, english_numbers, m.group()),
+            self.text
+        )
+
+    def fix_prefix_spacing(self):
+        """Puts ZWNJ between a word and its prefix (mi* nemi* bi*)"""
+        self.text = re.sub(r"\b(ن?می|بی)‌*(\s+)",r'\1‌', self.text)
+
+    def fix_prefix_separate(self):
+        """Puts ZWNJ between a word and its prefix (mi* nemi* bi*)"""
+        regex = re.compile(r"\b(بی|ن?می)‌*([^\[\]\(\)\s]+)") #  \b for words like سهمیه
+
         wlist = self.text.split(" ")
         for word in wlist:
             p = regex.search(word)
             if p:
-                # Here I'll check the word wasn't something like میلاد
+                # Checks that the prefix (mi* nemi* bi*) is part a a word or not, like میلاد.
                 if p.group() not in UnTouchable.words:
-                    # This little one was really tricky!
-                    # regex grouping is really awesome ;-)
                     self.text = re.sub(
-                        p.group(),
-                        p.group(1) + r"‌" + p.group(2) ,
+                        re.escape( p.group() ),
+                        p.group(1) + r"‌" + p.group(2),
                         self.text
                     )
 
-    def fix_suffix_separate_func(self):
-        """
-        to add virtual space in words with suffix (haye, ...)
-        that are not spaced correctly ;-)
-        """
+    def fix_suffix_spacing(self):
+        """Puts ZWNJ between a word and its suffix (*ha[ye] *tar[in])"""
         regex = re.compile(
-            r"""(\S+)
+            r"""\s+
             (تر(ی(ن)?)?
-            |ها(ی(ی)?)?|
-            [تمش]ان)\b""",
+            |[تمش]ان
+            |ها(ی(ی|ت|م|ش|تان|شان)?)?)
+            \b""",
             re.VERBOSE
         )
-        # This is a little parser that split whole string from spaces
-        # and put it to list all lists words will be test
-        # one by one and space if need
+        self.text = re.sub(regex, r'‌\1', self.text)
+
+        # Some special cases like و شان خود
+        regex = re.compile(r"\b(\w)‌([تمش]ان)\b", re.VERBOSE)
+        self.text = re.sub(regex, r'\1 \2', self.text)
+
+    def fix_suffix_separate(self):
+        """Puts ZWNJ between a word with its suffix (haye, ...)"""
+        regex = re.compile(
+            r"""(\S+?) # not-greedy fetch to handle some case like هایشان instead شان
+            (تر(ی(ن)?)?
+            |[تمش]ان
+            |ها(ی(ی|ت|م|ش|تان|شان)?)?)\b""",
+            re.VERBOSE
+        )
         wlist = self.text.split(" ")
         for word in wlist:
             p = regex.search(word)
             if p:
-                # Here I'll check the word wasn't something like بهتر
+                # Checks that the suffix (tar* haye*) is part of a word or not, like بهتر.
                 if p.group() not in UnTouchable.words:
                     self.text = re.sub(
-                        p.group(),
+                        re.escape( p.group() ),
                         p.group(1) + r"‌" + p.group(2) ,
                         self.text
                     )
+
+    def aggressive(self):
+        """Reduces Aggressive Punctuation to one sign."""
+        if self._cleanup_extra_marks:
+            self.text = re.sub(r'(!){2,}', r'\1', self.text)
+            self.text = re.sub(r'(؟){2,}', r'\1', self.text)
+
+        if self._cleanup_kashidas:
+            self.text = re.sub(r'ـ+', "", self.text)
+
+    def fix_spacing_for_braces_and_quotes(self):
+        """Fixes the braces and quotes spacing problems."""
+        # ()[]{}""«» should have one space before and no space after (inside)
+        self.text = re.sub(
+            r'[ ‌]*(\()\s*([^)]+?)\s*?(\))[ ‌]*',
+            r' \1\2\3 ',
+            self.text
+        )
+        self.text = re.sub(
+            r'[ ‌]*(\[)\s*([^)]+?)\s*?(\])[ ‌]*',
+            r' \1\2\3 ',
+            self.text
+        )
+        self.text = re.sub(
+            r'[ ‌]*(\{)\s*([^)]+?)\s*?(\})[ ‌]*',
+            r' \1\2\3 ',
+            self.text
+        )
+        self.text = re.sub(
+            r'[ ‌]*(“)\s*([^)]+?)\s*?(”)[ ‌]*',
+            r' \1\2\3 ',
+            self.text
+        )
+        self.text = re.sub(
+            r'[ ‌]*(«)\s*([^)]+?)\s*?(»)[ ‌]*',
+            r' \1\2\3 ',
+            self.text
+        )
+        # : ; , ! ? and their Persian counterparts should have one space after and no space before
+        self.text = re.sub(
+            r'[ ‌ ]*([:;,؛،.؟!]{1})[ ‌ ]*',
+            r'\1 ',
+            self.text
+        )
+        self.text = re.sub(
+            r'([۰-۹]+):\s+([۰-۹]+)',
+            r'\1:\2',
+            self.text
+        )
+        # Fixes inside spacing for () [] {} "" «»
+        self.text = re.sub(
+            r'(\()\s*([^)]+?)\s*?(\))',
+            r'\1\2\3',
+            self.text
+        )
+        self.text = re.sub(
+            r'(\[)\s*([^)]+?)\s*?(\])',
+            r'\1\2\3',
+            self.text
+        )
+        self.text = re.sub(
+            r'(\{)\s*([^)]+?)\s*?(\})',
+            r'\1\2\3',
+            self.text
+        )
+        self.text = re.sub(
+            r'(“)\s*([^)]+?)\s*?(”)',
+            r'\1\2\3',
+            self.text
+        )
+        self.text = re.sub(
+            r'(«)\s*([^)]+?)\s*?(»)',
+            r'\1\2\3',
+            self.text
+        )
+
+    def cleanup_spacing(self):
+        """Reduces multiple consecutive spaces to one."""
+        self.text = re.sub(r'[ ]+', r' ', self.text)
+        self.text = re.sub(r'([\n]+)[ ‌]', r'\1', self.text)
+
+    @classmethod
+    def char_translator(cls, fromchar, tochar, string):
+        """Translates the 'string' character by character from 'fromchar' to 'tochar'."""
+        newstring = string
+        for fc, tc in zip(fromchar, tochar):
+            newstring = re.sub(fc, tc, newstring)
+        return newstring
 
 
 class UnTouchable:
