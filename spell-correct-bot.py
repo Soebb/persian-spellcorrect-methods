@@ -1,4 +1,4 @@
-from spell import correction
+from spellcorrector1 import correction
 import os
 from pyrogram import Client, filters
 
